@@ -1,11 +1,25 @@
 # Web-D-Projects
 
-Web Development Projects
+Collection of my Web Development Projects.
 
-# Project 01: Amazon Web Clone
+## Projects
 
-* A front-end clone of Amazon built using HTML, CSS, and JavaScript.
+### Project 01: Amazon Clone (React + Vite)
 
-* Includes basic features like product listing, login, and cart system.
+A responsive Amazon-inspired frontend project built using:
 
-!! Project is under development. !!
+- React + Vite
+- Bootstrap
+- Tailwind CSS
+- React Router DOM
+
+### Features
+
+- Product listing
+- Product details page
+- Cart system
+- Login page
+- Responsive UI
+- Modern Navbar & Footer
+
+More projects will be added soon.
