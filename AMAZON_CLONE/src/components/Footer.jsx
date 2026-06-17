@@ -1,3 +1,5 @@
+import logo from "../assets/images/logo2.png"
+
 function Footer() {
 
     function scrollToTop() {
@@ -23,7 +25,6 @@ function Footer() {
             <div className="footer-content">
 
                 <div>
-
                     <h4 className="fw-bold mb-3">
                         Get to Know Us
                     </h4>
@@ -31,11 +32,9 @@ function Footer() {
                     <p>About Us</p>
                     <p>Careers</p>
                     <p>Press Releases</p>
-
                 </div>
 
                 <div>
-
                     <h4 className="fw-bold mb-3">
                         Connect with Us
                     </h4>
@@ -43,22 +42,18 @@ function Footer() {
                     <p>Facebook</p>
                     <p>X</p>
                     <p>Instagram</p>
-
                 </div>
 
                 <div>
-
                     <h4 className="fw-bold mb-3">
                         Make Money with Us
                     </h4>
 
                     <p>Sell on Amazon</p>
                     <p>Affiliate</p>
-
                 </div>
 
                 <div>
-
                     <h4 className="fw-bold mb-3">
                         Help
                     </h4>
@@ -66,7 +61,6 @@ function Footer() {
                     <p>Your Account</p>
                     <p>Returns</p>
                     <p>Help Center</p>
-
                 </div>
 
             </div>
@@ -74,7 +68,7 @@ function Footer() {
             <div className="footer-bottom">
 
                 <img
-                    src="/src/assets/images/logo2.png"
+                    src={logo}
                     alt="Amazon"
                 />
 

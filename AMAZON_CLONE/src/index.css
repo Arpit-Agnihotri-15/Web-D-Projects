@@ -16,6 +16,12 @@ body {
     padding: 12px 24px;
 }
 
+.navbar-brand img{
+    height:40px;
+    width:auto;
+    object-fit:contain;
+}
+
 .menu {
     background: #232f3e;
     color: white;
@@ -49,7 +55,6 @@ body {
     gap: 28px;
     padding: 35px;
     margin-top: -80px;
-
     align-items: stretch;
 }
 
@@ -59,14 +64,12 @@ body {
     overflow: hidden;
     transition: 0.3s;
     min-height: 480px;
-
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
-
     border: 1px solid #e2e2e2;
 }
+
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.18);
@@ -81,14 +84,10 @@ body {
 
 .product-info {
     padding: 20px;
-
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
-
     flex-grow: 1;
-
     text-align: center;
 }
 
@@ -118,11 +117,12 @@ body {
     padding: 20px;
 }
 
-.footer-bottom img {
-    height: 35px;
-    display: block;
-    margin: auto;
-    margin-bottom: 10px;
+.footer-bottom img{
+    height:40px;
+    width:auto;
+    display:block;
+    margin:auto;
+    object-fit:contain;
 }
 
 .cart-title {
@@ -188,22 +188,49 @@ body {
 }
 
 @media(max-width:768px){
-
     .slider {
         height: 220px;
     }
-
+    .slider img {
+        object-fit: cover;
+    }
     .products {
         grid-template-columns: repeat(1,1fr);
         margin-top: -40px;
     }
-
     .cart-item {
         flex-direction: column;
         text-align: center;
     }
-
     .navbar-custom {
         padding: 10px;
     }
+}
+
+
+.dark-theme {
+    background: #121212;
+    color: white;
+}
+
+.dark-theme .product-card,
+.dark-theme .cart-item,
+.dark-theme .login-box {
+    background: #1f1f1f;
+    color: white;
+    border-color: #333;
+}
+
+
+.dark-theme .bg-white {
+    background-color: #1f1f1f !important;
+    color: white !important;
+}
+
+.dark-theme .text-dark {
+    color: white !important;
+}
+
+.dark-theme .text-secondary {
+    color: #cccccc !important;
 }

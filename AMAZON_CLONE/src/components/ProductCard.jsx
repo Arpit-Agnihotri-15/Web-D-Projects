@@ -42,6 +42,19 @@ function ProductCard({ product, addToCart }) {
                         View Product
                     </Link>
 
+                    
+                    <button
+                        className="btn btn-outline-danger rounded-pill fw-bold py-2"
+                        onClick={() => {
+                            let wishlist = JSON.parse(localStorage.getItem("wishlist")) || []
+                            wishlist.push(product)
+                            localStorage.setItem("wishlist", JSON.stringify(wishlist))
+                            alert("Added To Wishlist")
+                        }}
+                    >
+                        ❤️ Wishlist
+                    </button>
+
                 </div>
 
             </div>

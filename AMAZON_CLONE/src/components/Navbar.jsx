@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
+import logo from "../assets/images/logo2.png"
 
-function Navbar({ search, setSearch }) {
+function Navbar({ search = "", setSearch = () => {} }) {
 
     const navigate = useNavigate()
 
@@ -25,9 +26,7 @@ function Navbar({ search, setSearch }) {
     }
 
     return (
-
         <>
-
             <nav className="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow">
 
                 <div className="container-fluid gap-4 align-items-center">
@@ -38,9 +37,12 @@ function Navbar({ search, setSearch }) {
                     >
 
                         <img
-                            src="/src/assets/images/logo2.png"
+                            src={logo}
                             alt="Amazon"
-                            className="h-12"
+                            style={{
+                                height: "40px",
+                                width: "auto"
+                            }}
                         />
 
                     </Link>
@@ -95,16 +97,22 @@ function Navbar({ search, setSearch }) {
 
                         {
                             user && (
-
                                 <button
                                     onClick={logout}
                                     className="btn btn-warning fw-bold"
                                 >
                                     Logout
                                 </button>
-
                             )
                         }
+
+                        <button
+onClick={()=>{
+document.body.classList.toggle("dark-theme")
+}}
+>
+🌙
+</button>
 
                     </div>
 
@@ -113,7 +121,6 @@ function Navbar({ search, setSearch }) {
             </nav>
 
             <div className="menu">
-
                 <span>All</span>
                 <span>Fresh</span>
                 <span>Deals</span>
@@ -121,7 +128,6 @@ function Navbar({ search, setSearch }) {
                 <span>Customer Service</span>
                 <span>Electronics</span>
                 <span>Fashion</span>
-
             </div>
 
         </>
