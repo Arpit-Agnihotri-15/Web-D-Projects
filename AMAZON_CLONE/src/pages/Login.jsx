@@ -1,125 +1,83 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import Footer from "../components/Footer"
-
 import logo from "../assets/images/logo.png"
 
 function Login() {
-
     const navigate = useNavigate()
-
     const [email, setEmail] = useState("")
-
     const [password, setPassword] = useState("")
 
-    const [error, setError] = useState("")
-
-    function login() {
-
-        if (email === "" || password === "") {
-
-            setError("All fields required!")
-
+    function checkEmail(emailText) {
+        if (emailText.includes("@") && emailText.includes(".")) {
+            return true
         } else {
-
-            localStorage.setItem("user", email)
-
-            alert("Login Successful!")
-
-            navigate("/")
+            return false
         }
     }
 
-    function createAccount() {
-
-        if (!email) {
-
-            alert("Enter email first!")
-
+    function handleLogin() {
+        if (email === "" || password === "") {
+            toast.error("Please fill all details!")
             return
         }
-
+        if (checkEmail(email) === false) {
+            toast.error("Email format is wrong!")
+            return
+        }
         localStorage.setItem("user", email)
-
-        alert("Account Created Successfully!")
-
+        toast.success("Login Success!")
         navigate("/")
     }
 
+    function handleSignup() {
+        if (email === "" || password === "") {
+            toast.error("Enter email and password to sign up!")
+            return
+        }  
+        if (checkEmail(email) === false) {
+            toast.error("Use a proper email id!")
+            return
+        }
+        localStorage.setItem("user", email)
+        toast.success("Account Created!")
+        navigate("/")
+    }
     return (
-
         <>
-
-            <div className="login-container">
-
-                <div className="login-box">
-
-                    <h1 className="text-center fw-bold mb-4">
-                        Sign In
-                    </h1>
-
-                    <div className="login-logo mb-4">
-
-                        <img
-                            src={logo}
-                            alt="Amazon"
-                        />
-
+            <div className="login-page">
+                <div className="card-box login-box">
+                    <h1 className="text-center">Sign In</h1>
+                    <div className="login-logo">
+                        <img src={logo} alt="Amazon" />
                     </div>
-
-                    <label className="fw-bold mb-2">
-                        Email
-                    </label>
-
+                    <label className="text-bold">Email</label>
                     <input
-                        type="text"
-                        className="form-control mb-3 rounded-3"
+                        type="email"
+                        className="input-field"
                         placeholder="Enter Email"
                         onChange={(e) => setEmail(e.target.value)}
                     />
-
-                    <label className="fw-bold mb-2">
-                        Password
-                    </label>
-
+                    <label className="text-bold">Password</label>
                     <input
                         type="password"
-                        className="form-control mb-3 rounded-3"
+                        className="input-field"
                         placeholder="Enter Password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-
-                    <button
-                        onClick={login}
-                        className="btn btn-warning w-100 fw-bold py-2 rounded-pill"
-                    >
+                    <button onClick={handleLogin} className="btn btn-primary full-width">
                         Sign In
                     </button>
-
-                    <p className="text-danger text-center mt-2">
-                        {error}
-                    </p>
-
-                    <hr className="my-4" />
-
-                    <p className="text-center">
-                        New to Amazon?
-                    </p>
-
-                    <button
-                        onClick={createAccount}
-                        className="btn btn-outline-secondary w-100 rounded-pill"
-                    >
-                        Create your Amazon account
+                    <hr className="divider" />
+                    <p className="text-center">New User?</p>
+                    <button onClick={handleSignup} className="btn btn-outline full-width">
+                        Create Account
                     </button>
-
                 </div>
-
             </div>
-
             <Footer />
-
         </>
     )
 }

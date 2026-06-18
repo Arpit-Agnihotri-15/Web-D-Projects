@@ -2,134 +2,77 @@ import { Link, useNavigate } from "react-router-dom"
 import logo from "../assets/images/logo2.png"
 
 function Navbar({ search = "", setSearch = () => {} }) {
-
     const navigate = useNavigate()
-
     let user = localStorage.getItem("user")
+    let cartList = JSON.parse(localStorage.getItem("cart")) || []
+    let totalItems = 0
+    if (user) {
+        for (let i = 0; i < cartList.length; i++) {
+            totalItems = totalItems + cartList[i].qty
+        }
+    }
 
-    let cart = user
-        ? JSON.parse(localStorage.getItem("cart")) || []
-        : []
-
-    let total = 0
-
-    cart.forEach(item => total += item.qty || 1)
-
-    function logout() {
-
+    function doLogout() {
         localStorage.removeItem("user")
         localStorage.removeItem("cart")
-
         navigate("/")
-
         window.location.reload()
     }
 
+    function changeTheme() {
+        document.body.classList.toggle("dark-theme")
+        if (document.body.classList.contains("dark-theme")) {
+            localStorage.setItem("theme", "dark")
+        } else {
+            localStorage.setItem("theme", "light")
+        }
+    }
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow">
-
-                <div className="container-fluid gap-4 align-items-center">
-
-                    <Link
-                        className="navbar-brand"
-                        to="/"
-                    >
-
-                        <img
-                            src={logo}
-                            alt="Amazon"
-                            style={{
-                                height: "40px",
-                                width: "auto"
-                            }}
-                        />
-
+            <nav className="navbar">
+                <div className="nav-container">
+                    <Link to="/" className="nav-logo">
+                        <img src={logo} alt="Amazon" />
                     </Link>
-
                     <input
                         type="text"
-                        placeholder="Search Amazon.in"
-                        className="form-control rounded-pill px-4 py-2 flex-grow-1"
+                        placeholder="Search products..."
+                        className="search-bar"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-
-                    <div className="d-flex align-items-center gap-4 text-white">
-
+                    <div className="nav-right">
                         <div>
-
-                            <small>
-                                {user
-                                    ? `Hello, ${user}`
-                                    : "Hello, Sign in"}
-                            </small>
-
+                            <span className="nav-text-small">{user ? `Hi, ${user}` : "Hi, Sign in"}</span>
                             <div>
-
-                                <Link
-                                    to="/login"
-                                    className="text-white text-decoration-none fw-bold"
-                                >
-                                    Account
-                                </Link>
-
+                                <Link to="/login" className="nav-link text-bold">Account</Link>
                             </div>
-
                         </div>
-
                         <div>
-
-                            <small>Returns</small>
-
-                            <div className="fw-bold">
-                                & Orders
-                            </div>
-
+                            <span className="nav-text-small">Returns</span>
+                            <div className="text-bold">& Orders</div>
                         </div>
-
-                        <Link
-                            to="/cart"
-                            className="text-white text-decoration-none fw-bold"
-                        >
-                            🛒 Cart ({total})
+                        <Link to="/cart" className="nav-link text-bold">
+                            🛒 Cart ({totalItems})
                         </Link>
-
-                        {
-                            user && (
-                                <button
-                                    onClick={logout}
-                                    className="btn btn-warning fw-bold"
-                                >
-                                    Logout
-                                </button>
-                            )
-                        }
-
-                        <button
-onClick={()=>{
-document.body.classList.toggle("dark-theme")
-}}
->
-🌙
-</button>
-
+                        {user && (
+                            <button onClick={doLogout} className="btn btn-primary">
+                                Logout
+                            </button>
+                        )}
+                        <button onClick={changeTheme} className="theme-toggle-btn">
+                            🌙
+                        </button>
                     </div>
-
                 </div>
-
             </nav>
-
             <div className="menu">
                 <span>All</span>
-                <span>Fresh</span>
-                <span>Deals</span>
                 <span>Mobiles</span>
-                <span>Customer Service</span>
                 <span>Electronics</span>
                 <span>Fashion</span>
+                <span>Customer Service</span>
             </div>
-
         </>
     )
 }

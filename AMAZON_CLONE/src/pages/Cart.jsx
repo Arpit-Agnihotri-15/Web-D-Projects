@@ -1,179 +1,150 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-
+import { toast } from "react-toastify"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 
 function Cart() {
     const navigate = useNavigate()
-
-    
-    const [cart, setCart] = useState(
-        JSON.parse(localStorage.getItem("cart")) || []
-    )
-
-    
-    const [wishlist, setWishlist] = useState(
-        JSON.parse(localStorage.getItem("wishlist")) || []
-    )
-
-    
-    function display(updatedCart) {
-        setCart([...updatedCart])
-        localStorage.setItem("cart", JSON.stringify(updatedCart))
+    const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || [])
+    const [wishlist, setWishlist] = useState(JSON.parse(localStorage.getItem("wishlist")) || [])
+    let totalAmount = 0
+    for (let i = 0; i < cart.length; i++) {
+        totalAmount = totalAmount + (cart[i].price * cart[i].qty)
     }
 
-    function changeQty(index, change) {
-        let updated = [...cart]
-        updated[index].qty += change
-        if (updated[index].qty <= 0) {
-            updated.splice(index, 1)
+    function updateCart(newCartData) {
+        setCart([...newCartData])
+        localStorage.setItem("cart", JSON.stringify(newCartData))
+    }
+
+    function increaseQty(index) {
+        let tempCart = [...cart]
+        tempCart[index].qty = tempCart[index].qty + 1
+        updateCart(tempCart)
+    }
+
+    function decreaseQty(index) {
+        let tempCart = [...cart]
+        tempCart[index].qty = tempCart[index].qty - 1   
+        if (tempCart[index].qty === 0) {
+            tempCart.splice(index, 1)
         }
-        display(updated)
+        updateCart(tempCart)
     }
 
-    function removeItem(index) {
-        let updated = [...cart]
-        updated.splice(index, 1)
-        display(updated)
+    function removeFromCart(index) {
+        let tempCart = [...cart]
+        tempCart.splice(index, 1)
+        updateCart(tempCart)
+        toast.info("Removed from cart")
     }
 
-    function checkout() {
+    function doCheckout() {
         let user = localStorage.getItem("user")
         if (!user) {
-            alert("Please login first!")
-            navigate("/login")
+            toast.error("Please login to checkout!")
             return
         }
-        if (cart.length === 0) {
-            alert("Your cart is empty!")
-            return
-        }
-        alert("Order placed successfully! (Demo)")
+        
+        toast.success("Order placed successfully!")
         localStorage.removeItem("cart")
-        setCart([])
+        setCart([]) 
+        setTimeout(() => { window.location.href = "/" }, 1500)
     }
 
-    
-    function displayWishlist(updatedWishlist) {
-        setWishlist([...updatedWishlist])
-        localStorage.setItem("wishlist", JSON.stringify(updatedWishlist))
+    function updateWishlist(newWishlistData) {
+        setWishlist([...newWishlistData])
+        localStorage.setItem("wishlist", JSON.stringify(newWishlistData))
     }
 
-    function removeWishlistItem(index) {
-        let updated = [...wishlist]
-        updated.splice(index, 1)
-        displayWishlist(updated)
+    function removeFromWishlist(index) {
+        let tempWishlist = [...wishlist]
+        tempWishlist.splice(index, 1)
+        updateWishlist(tempWishlist)
+        toast.info("Removed from wishlist")
     }
 
-    function moveFromWishlistToCart(item, index) {
-        
-        let updatedCart = [...cart]
-        let existing = updatedCart.find(cartItem => cartItem.id === item.id)
-        
-        if (existing) {
-            existing.qty += 1
-        } else {
-            updatedCart.push({ ...item, qty: 1 })
+    function moveToCart(item, index) {
+        let user = localStorage.getItem("user")
+        if (!user) {
+            toast.error("Please login first!")
+            return
         }
-        display(updatedCart)
-
-        
-        removeWishlistItem(index)
-        alert("Moved to Cart!")
+        let tempCart = [...cart]
+        let found = false   
+        for (let i = 0; i < tempCart.length; i++) {
+            if (tempCart[i].id === item.id) {
+                tempCart[i].qty = tempCart[i].qty + 1
+                found = true
+                break
+            }
+        }   
+        if (found === false) {
+            item.qty = 1
+            tempCart.push(item)
+        }   
+        updateCart(tempCart)
+        removeFromWishlist(index)   
+        toast.success("Moved to Cart!")
+        setTimeout(() => { window.location.reload() }, 1500)
     }
-
-    let total = 0
-    cart.forEach(item => {
-        total += item.price * item.qty
-    })
-
     return (
         <>
             <Navbar />
-
-            
-            <h1 className="cart-title">🛒 Your Cart</h1>
-
+            <h1 className="page-title">🛒 Your Cart</h1>
             <div className="cart-container">
                 {cart.length === 0 && (
-                    <div className="text-center my-5 py-5 bg-white rounded-4 shadow-sm">
-                        <h3 className="text-secondary mb-4">Your Amazon Cart is empty.</h3>
-                        <button 
-                            onClick={() => navigate("/")} 
-                            className="btn btn-warning rounded-pill px-5 fw-bold py-2"
-                        >
+                    <div className="card-box empty-message">
+                        <h3 className="text-gray">Cart is empty</h3>
+                        <button onClick={() => navigate("/")} className="btn btn-primary">
                             Shop Now
                         </button>
                     </div>
                 )}
-
                 {cart.map((item, index) => (
-                    <div className="cart-item shadow-sm" key={`cart-${index}`}>
+                    <div className="cart-item" key={"cart" + index}>
                         <img src={item.img} alt={item.name} />
-
-                        <div className="cart-details flex-grow-1">
+                        <div className="cart-details">
                             <h3>{item.name}</h3>
-                            <p className="text-success fw-bold fs-5">₹{item.price}</p>
-
-                            <div className="qty-box mb-3">
-                                <button onClick={() => changeQty(index, -1)} className="fw-bold fs-5">-</button>
-                                <span className="fs-5 px-3">{item.qty}</span>
-                                <button onClick={() => changeQty(index, 1)} className="fw-bold fs-5">+</button>
+                            <p className="product-price">₹{item.price}</p>
+                            <div className="qty-box">
+                                <button onClick={() => decreaseQty(index)} className="qty-btn">-</button>
+                                <span>{item.qty}</span>
+                                <button onClick={() => increaseQty(index)} className="qty-btn">+</button>
                             </div>
-
-                            <button
-                                className="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                onClick={() => removeItem(index)}
-                            >
-                                Remove from Cart
+                            <button className="btn btn-danger-outline btn-small" onClick={() => removeFromCart(index)}>
+                                Remove
                             </button>
                         </div>
                     </div>
                 ))}
             </div>
-
             {cart.length > 0 && (
-                <div className="cart-summary text-center my-5 bg-white p-4 rounded-4 shadow-sm w-75 mx-auto">
-                    <h2 className="mb-4">Total: ₹{total}</h2>
-                    <div className="d-flex justify-content-center gap-3 flex-wrap">
-                        <button onClick={() => navigate("/")} className="btn btn-dark rounded-pill px-4 py-2">
-                            ⬅ Continue Shopping
-                        </button>
-                        <button onClick={checkout} className="btn btn-warning rounded-pill px-4 py-2 fw-bold">
-                            Proceed to Checkout
-                        </button>
+                <div className="card-box summary-box">
+                    <h2>Total Amount: ₹{totalAmount}</h2>
+                    <div className="summary-actions">
+                        <button onClick={() => navigate("/")} className="btn btn-dark">Go Back</button>
+                        <button onClick={doCheckout} className="btn btn-primary">Checkout</button>
                     </div>
                 </div>
             )}
-
-
-            
             {wishlist.length > 0 && (
                 <>
-                    <h1 className="cart-title text-danger mt-5">❤️ Your Wishlist</h1>
-                    
-                    <div className="cart-container mb-5">
+                    <h1 className="page-title highlight-red">❤️ Wishlist</h1>
+                    <div className="cart-container mb-large">
                         {wishlist.map((item, index) => (
-                            <div className="cart-item shadow-sm" key={`wishlist-${index}`}>
+                            <div className="cart-item" key={"wish" + index}>
                                 <img src={item.img} alt={item.name} />
-
-                                <div className="cart-details flex-grow-1">
+                                <div className="cart-details">
                                     <h3>{item.name}</h3>
-                                    <p className="text-success fw-bold fs-5">₹{item.price}</p>
-
-                                    <div className="d-flex gap-3 mt-3 flex-wrap">
-                                        <button 
-                                            className="btn btn-warning rounded-pill px-4 fw-bold"
-                                            onClick={() => moveFromWishlistToCart(item, index)}
-                                        >
+                                    <p className="product-price">₹{item.price}</p>
+                                    <div className="summary-actions mt-small">
+                                        <button className="btn btn-primary" onClick={() => moveToCart(item, index)}>
                                             Move to Cart
                                         </button>
-                                        <button 
-                                            className="btn btn-outline-danger rounded-pill px-4"
-                                            onClick={() => removeWishlistItem(index)}
-                                        >
-                                            Remove
+                                        <button className="btn btn-danger-outline" onClick={() => removeFromWishlist(index)}>
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
@@ -182,7 +153,6 @@ function Cart() {
                     </div>
                 </>
             )}
-
             <Footer />
         </>
     )
